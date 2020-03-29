@@ -1,8 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
+import api from '../services/api';
 import { Button } from '../helpers/mixins/forms';
 import { FiTrash2 } from 'react-icons/fi';
-import { colors, pallete } from '../helpers/variables';
+import { pallete } from '../helpers/variables';
 
 const IncidentCard = styled.li`
     background-color: #fff;
@@ -28,7 +29,23 @@ const StyledButton = styled(Button)`
     right: 20px;
 `;
 
-function Incident({ title, description, value }) {
+function Incident({ id, title, description, value, incidents, setIncidents }) {
+
+
+    async function handleDeleteIncident() {
+        try {
+            const ongId = localStorage.getItem('ongId');
+            await api.delete(`incidents/${id}`, {
+                headers: {
+                    Authorization: ongId,
+                }
+            })
+            setIncidents(incidents.filter(incident => incident.id !== id));
+        } catch (err) {
+            alert('Erro ao deletar o caso')
+        }
+    }
+
     return (
         <IncidentCard>
             <strong>
@@ -47,9 +64,9 @@ function Incident({ title, description, value }) {
                 Valor:
             </strong>
             <p>
-                {value}
+                {Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)}
             </p>
-            <StyledButton link title="Excluir caso">
+            <StyledButton link title="Excluir caso" onClick={handleDeleteIncident}>
                 <FiTrash2 size={20} color={pallete.gray} />
             </StyledButton>
         </IncidentCard>

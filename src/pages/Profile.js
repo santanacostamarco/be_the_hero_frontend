@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import api from '../services/api';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { Button } from '../helpers/mixins/forms'
 import { FiPower } from 'react-icons/fi';
 import { pallete } from '../helpers/variables';
@@ -48,6 +49,29 @@ const IncidentList = styled.ul`
 `;
 
 function Profile() {
+    const ongName = localStorage.getItem('ongName');
+    const ongId = localStorage.getItem('ongId');
+
+    const [incidents, setIncidents] = useState([]);
+
+    useEffect(() => {
+        api.get('profile', {
+            headers: {
+                Authorization: ongId,
+            }
+        }).then(response => {
+            setIncidents(response.data);
+        });
+    }, [ongId]);
+
+    if (!ongName || !ongId) {
+        return <Redirect to="/" />
+    }
+
+    function handleLogout() {
+        localStorage.clear();
+    }
+
     return (
         <PageWrapper>
             <Container full>
@@ -55,14 +79,14 @@ function Profile() {
                     <WelcomeDiv>
                         <img src={logo} alt="Be the hero" />
                         <WelcomeMessage>
-                            Bem vinda, APAD
+                            Bem vinda, {ongName}
                         </WelcomeMessage>
                     </WelcomeDiv>
                     <div>
                         <Link to="/incidents/new">
                             <Button primary>Cadastrar novo caso</Button>
                         </Link>
-                        <StyledLink to='/'>
+                        <StyledLink to='/' onClick={handleLogout}>
                             <Button title="Logout">
                                 <StyledFiPower size={16} color={pallete.red} />
                             </Button>
@@ -73,13 +97,17 @@ function Profile() {
                 <DefaultTitle> Casos Cadastrados </DefaultTitle>
 
                 <IncidentList>
-                    <Incident title="test" description="Lorem ipsum dolor sit amet" value="200" />
-                    <Incident title="test" description="Lorem ipsum dolor sit amet" value="200" />
-                    <Incident title="test" description="Lorem ipsum dolor sit amet" value="200" />
-                    <Incident title="test" description="Lorem ipsum dolor sit amet" value="200" />
-                    <Incident title="test" description="Lorem ipsum dolor sit amet" value="200" />
-                    <Incident title="test" description="Lorem ipsum dolor sit amet" value="200" />
-                    <Incident title="test" description="Lorem ipsum dolor sit amet" value="200" />
+
+                    {incidents.map((incident, key) => (
+                        <Incident key={key}
+                            id={incident.id}
+                            title={incident.title}
+                            description={incident.description}
+                            value={incident.value}
+                            incidents={incidents}
+                            setIncidents={setIncidents} />
+                    ))}
+
                 </IncidentList>
             </Container>
         </PageWrapper>

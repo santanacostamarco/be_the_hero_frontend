@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
+import api from '../services/api';
+import { useHistory } from 'react-router-dom';
 import {
     PageWrapper,
     Container,
@@ -17,6 +19,7 @@ import styled from 'styled-components';
 import { FiArrowLeft } from 'react-icons/fi';
 import Logo from '../components/Logo';
 import { pallete } from '../helpers/variables'
+import Profile from './Profile';
 
 const StyledFiArrowLeft = styled(FiArrowLeft)`
     margin-right: 10px;
@@ -33,6 +36,34 @@ const StyledParagraph = styled.p`
 `;
 
 function NewIncident() {
+
+    const history = useHistory();
+    const ongId = localStorage.getItem('ongId');
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [value, setValue] = useState('');
+
+    async function handleSubmit(e) {
+        e.preventDefault();
+
+        const data = {
+            title,
+            description,
+            value
+        }
+
+        try {
+            await api.post('incidents', data, {
+                headers: {
+                    Authorization: ongId
+                }
+            })
+            history.push('/profile');
+        } catch (err) {
+            alert('Não foi possível criar o caso. Tente novamente.')
+        }
+    }
+
     return (
         <PageWrapper vCenter>
             <Container flex shadow>
@@ -49,15 +80,25 @@ function NewIncident() {
                     </StyledLink>
                 </StyledSection>
                 <StyledSection>
-                    <form action="#." method="POST">
+                    <form onSubmit={handleSubmit}>
                         <FormRow>
-                            <Input type="text" placeholder="Título do caso" />
+                            <Input type="text"
+                                placeholder="Título do caso"
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)} />
                         </FormRow>
                         <FormRow>
-                            <Textarea rows="5" cols="30" placeholder="Descrição" />
+                            <Textarea rows="5"
+                                cols="30"
+                                placeholder="Descrição"
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)} />
                         </FormRow>
                         <FormRow>
-                            <Input type="text" placeholder="Valor em Reais (R$)" />
+                            <Input type="text"
+                                placeholder="Valor em Reais (R$)"
+                                value={value}
+                                onChange={(e) => setValue(e.target.value)} />
                         </FormRow>
                         <FormRow>
                             <Button type="reset" maxWidth='120px'> Cancelar </Button>

@@ -1,5 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
+import api from '../services/api';
 import styled from 'styled-components';
+
+import { useHistory } from 'react-router-dom';
+
 import {
     Container,
     DefaultTitle,
@@ -33,16 +37,36 @@ const HeroesImg = styled.img`
 `;
 
 function Login() {
+    const history = useHistory();
+
+    const [id, setId] = useState('');
+
+    async function handleSubmit(e) {
+        e.preventDefault();
+
+        try {
+            const response = await api.post('session', { id });
+            localStorage.setItem('ongId', id);
+            localStorage.setItem('ongName', response.data.name);
+            history.push('/profile')
+        } catch (err) {
+            alert("Falha ao tentar fazer login");
+        }
+    }
+
     return (
         <PageWrapper vCenter>
             <Container flex>
                 <VerticallyCentered>
                     <Logo />
                     <div>
-                        <form action="#." method="POST">
+                        <form onSubmit={handleSubmit}>
                             <DefaultTitle>Faça seu Login</DefaultTitle>
                             <FormRow>
-                                <Input type="text" placeholder="Seu ID" />
+                                <Input type="text"
+                                    placeholder="Seu ID"
+                                    value={id}
+                                    onChange={e => setId(e.target.value)} />
                             </FormRow>
                             <FormRow>
                                 <Button type="submit" primary> Entrar </Button>

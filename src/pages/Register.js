@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import api from '../services/api';
 import {
     PageWrapper,
     Container,
@@ -17,6 +18,8 @@ import { FiArrowLeft } from 'react-icons/fi';
 import Logo from '../components/Logo';
 import { pallete } from '../helpers/variables'
 
+import { useHistory } from 'react-router-dom';
+
 const StyledFiArrowLeft = styled(FiArrowLeft)`
     margin-right: 10px;
 `;
@@ -32,6 +35,36 @@ const StyledParagraph = styled.p`
 `;
 
 function Register() {
+
+    const history = useHistory();
+
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [whatsapp, setWhatsapp] = useState('');
+    const [city, setCity] = useState('');
+    const [uf, setUf] = useState('');
+
+
+    async function handleSubmit(e) {
+        e.preventDefault();
+
+        const data = {
+            name,
+            email,
+            whatsapp,
+            city,
+            uf
+        }
+
+        try {
+            const response = await api.post('ongs', data);
+            alert(`Seu ID de acesso: ${response.data.id}`);
+            history.push('/');
+        } catch (err) {
+            alert('Erro ao criar novo cadastro');
+        }
+    }
+
     return (
         <PageWrapper vCenter>
             <Container flex shadow>
@@ -48,19 +81,36 @@ function Register() {
                     </StyledLink>
                 </StyledSection>
                 <StyledSection>
-                    <form action="#." method="POST">
+                    <form onSubmit={handleSubmit}>
                         <FormRow>
-                            <Input type="text" placeholder="Nome da ONG" />
+                            <Input type="text"
+                                placeholder="Nome da ONG"
+                                value={name}
+                                onChange={e => setName(e.target.value)} />
                         </FormRow>
                         <FormRow>
-                            <Input type="email" placeholder="E-mail" />
+                            <Input type="email"
+                                placeholder="E-mail"
+                                value={email}
+                                onChange={e => setEmail(e.target.value)} />
                         </FormRow>
                         <FormRow>
-                            <Input type="tel" placeholder="WhatsApp" />
+                            <Input type="tel"
+                                placeholder="WhatsApp"
+                                value={whatsapp}
+                                onChange={e => setWhatsapp(e.target.value)} />
                         </FormRow>
                         <FormRow>
-                            <Input type="text" placeholder="Cidade" />
-                            <Input type="text" placeholder="UF" maxWidth="40px" />
+                            <Input type="text"
+                                placeholder="Cidade"
+                                value={city}
+                                onChange={e => setCity(e.target.value)} />
+
+                            <Input type="text"
+                                placeholder="UF"
+                                maxWidth="40px"
+                                value={uf}
+                                onChange={e => setUf(e.target.value)} />
                         </FormRow>
                         <FormRow>
                             <Button type="submit" primary> Cadastrar </Button>

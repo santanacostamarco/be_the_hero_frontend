@@ -32,11 +32,11 @@ export const Button = styled.button`
     
     cursor: pointer;
 
-    ${ ({ link }) => link && `
+    ${ ({ link }) => link ? `
         background-color: transparent;
         border: 0;
         padding: 0;
-    ` || `
+    ` : `
         background-color: ${colors.bg};
         border: 1px solid ${colors.inputBorder};
         height: 45px;
@@ -45,7 +45,7 @@ export const Button = styled.button`
         margin-left: 2px;
     `}
 
-    ${ ({ primary }) => primary && `
+    ${ ({ primary }) => primary ? `
         border-color: ${colors.btnPrimaryBg};
         color: #fff;
         background-color: ${colors.btnPrimaryBg};
@@ -54,7 +54,7 @@ export const Button = styled.button`
         &&:hover {
             filter: brightness(90%);
         }
-    ` || `
+    ` : `
         transition: border-color .2s;
 
         &&:hover {
