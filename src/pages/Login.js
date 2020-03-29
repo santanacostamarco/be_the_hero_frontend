@@ -1,53 +1,30 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Container, Submit, Input } from '../helpers/mixins';
-import logo from '../assets/logo.svg';
+import {
+    Container,
+    DefaultTitle,
+    PageWrapper,
+    StyledLink
+} from '../helpers/mixins/index';
+
+import {
+    Input,
+    Button,
+    FormRow
+} from '../helpers/mixins/forms';
+
 import heroes from '../assets/heroes.png';
 import { FiLogIn } from 'react-icons/fi';
 import { pallete } from '../helpers/variables';
+import Logo from '../components/Logo';
 
-const LoginWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-`;
-
-const FlexContainer = styled(Container)`
-    && {
-        display: flex;
-    }
-`;
-
-const VerticallyCentered = styled.div`
+const VerticallyCentered = styled.section`
     display: flex;
     flex-direction: column;
     justify-content: center;
 `;
 
-const ImgWrapper = styled.div`
-    margin-bottom: 5rem;
-`;
-
-const LoginTitle = styled.h1`
-    font-size: 1.5rem;
-`;
-
-const FormRow = styled.div`
-    display: flex;
-    flex-direction: column;
-`;
-
-const SignIn = styled.a`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 16px;
-    color: #41414d;
-    text-decoration: none;
-`;
-
-const SignInIcon = styled(FiLogIn)`
+const StyledFiLogIn = styled(FiLogIn)`
     margin-right: 10px;
 `;
 
@@ -57,33 +34,33 @@ const HeroesImg = styled.img`
 
 function Login() {
     return (
-        <LoginWrapper>
-            <FlexContainer>
+        <PageWrapper vCenter>
+            <Container flex>
                 <VerticallyCentered>
-                    <ImgWrapper>
-                        <img src={logo} alt="Be the hero" />
-                    </ImgWrapper>
+                    <Logo />
                     <div>
-                        <form>
-                            <LoginTitle>Faça seu Login</LoginTitle>
+                        <form action="#." method="POST">
+                            <DefaultTitle>Faça seu Login</DefaultTitle>
                             <FormRow>
                                 <Input type="text" placeholder="Seu ID" />
-                                <Submit type="submit"> Entrar </Submit>
+                            </FormRow>
+                            <FormRow>
+                                <Button type="submit" primary> Entrar </Button>
                             </FormRow>
                         </form>
                         <div>
-                            <SignIn href="/register">
-                                <SignInIcon size={16} color={pallete.red} />
+                            <StyledLink to="/register">
+                                <StyledFiLogIn size={16} color={pallete.red} />
                                 <span>Não tenho cadastro</span>
-                            </SignIn>
+                            </StyledLink>
                         </div>
                     </div>
                 </VerticallyCentered>
                 <div>
                     <HeroesImg src={heroes} alt="Be a hero!" />
                 </div>
-            </FlexContainer>
-        </LoginWrapper>
+            </Container>
+        </PageWrapper>
     )
 }
 
